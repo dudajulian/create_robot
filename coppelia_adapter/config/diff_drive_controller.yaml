@@ -1,0 +1,29 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+diff_drive_controller:
+  ros__parameters:
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+
+    <!-- wheel_separation: 0.235
+    wheel_radius: 0.036 -->
+
+    use_stamped_vel: false
+
+    # Publish to these topics
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    publish_rate: 50.0
+    
+    # Subscribe to cmd_vel
+    cmd_vel_timeout: 0.5
+    publish_limited_velocity: true
+    linear.x.has_velocity_limits: true
+    linear.x.max_velocity: 0.5
+    angular.z.has_velocity_limits: true
+    angular.z.max_velocity: 2.0

@@ -24,4 +24,24 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+add_executable(diff_drive_adapter src/coppelia_adapter.cpp)
+ament_target_dependencies(diff_drive_adapter 
+  rclcpp 
+  geometry_msgs 
+  std_msgs 
+  controller_manager
+)
+
+install(TARGETS
+  diff_drive_adapter
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+  description
+  launch
+  config
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ament_package()
