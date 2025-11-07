@@ -11,6 +11,9 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(controller_manager REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -24,8 +27,8 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(diff_drive_adapter src/coppelia_adapter.cpp)
-ament_target_dependencies(diff_drive_adapter 
+add_executable(coppelia_adapter src/coppelia_adapter.cpp)
+ament_target_dependencies(coppelia_adapter 
   rclcpp 
   geometry_msgs 
   std_msgs 
@@ -33,7 +36,7 @@ ament_target_dependencies(diff_drive_adapter
 )
 
 install(TARGETS
-  diff_drive_adapter
+  coppelia_adapter
   DESTINATION lib/${PROJECT_NAME}
 )
 

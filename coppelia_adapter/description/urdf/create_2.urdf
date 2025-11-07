@@ -225,4 +225,24 @@
     <xacro:sim_create_wall_sensor/>
     <xacro:sim_create_cliff_sensors/>
     <xacro:sim_imu/> -->
+  <ros2_control name="create_2" type="system">
+    <hardware>
+      <plugin>ros2_control_demo_example_2/DiffBotSystemHardware</plugin>
+      <param name="example_param_hw_start_duration_sec">0</param>
+      <param name="example_param_hw_stop_duration_sec">3.0</param>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+  s
+    
+
 </robot>
