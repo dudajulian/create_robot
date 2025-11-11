@@ -29,7 +29,17 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "gui",
             default_value="true",
-            description="Start RViz2 automatically with this launch file.",
+            description="Start RViz2 automatically with this launch file",
+        )
+    )
+    rviz_config_file = PathJoinSubstitution(
+        [FindPackageShare("coppelia_adapter"), "config", "create_2.rviz"]
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "rviz_config",
+            default_value=rviz_config_file,
+            description="Path to rviz config file to use.",
         )
     )
     declared_arguments.append(
@@ -65,9 +75,6 @@ def generate_launch_description():
             "config",
             "diff_drive_controller.yaml",
         ]
-    )
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("coppelia_adapter"), "rviz", "create_2.rviz"]
     )
 
     control_node = Node(
