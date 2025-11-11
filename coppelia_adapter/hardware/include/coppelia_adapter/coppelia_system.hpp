@@ -32,6 +32,9 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
+#include "sensor_msgs/msg/joint_state.hpp"
+#include "std_msgs/msg/float64.hpp"
+
 namespace coppelia_adapter
 {
 class DiffBotSystemHardware : public hardware_interface::SystemInterface
@@ -71,18 +74,23 @@ public:
   rclcpp::Clock::SharedPtr get_clock() const { return clock_; }
 
 private:
-  // Parameters for the DiffBot simulation
-  double hw_start_sec_;
-  double hw_stop_sec_;
-
   // Objects for logging
   std::shared_ptr<rclcpp::Logger> logger_;
   rclcpp::Clock::SharedPtr clock_;
 
-  // Store the command for the simulated robot
-  std::vector<double> hw_commands_;
+  std::string robot_name_;
+  std::vector<std::string> joint_names_;
   std::vector<double> hw_positions_;
   std::vector<double> hw_velocities_;
+  std::vector<double> hw_commands_;
+  
+  std::shared_ptr<rclcpp::Node> node_;
+  rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr left_wheel_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr right_wheel_pub_;
+
+  void jointStateCallback(const sensor_msgs::msg::JointState::SharedPtr msg);
+
 };
 
 }  // namespace coppelia_adapter
