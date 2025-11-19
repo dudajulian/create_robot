@@ -59,7 +59,7 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
   hardware_interface::return_type write(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+    const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/) override;
 
   /// Get the logger of the SystemInterface.
   /**
@@ -88,6 +88,7 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr left_wheel_pub_;
   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr right_wheel_pub_;
+  sensor_msgs::msg::JointState::SharedPtr last_joint_state_msg_;
 
   void jointStateCallback(const sensor_msgs::msg::JointState::SharedPtr msg);
 

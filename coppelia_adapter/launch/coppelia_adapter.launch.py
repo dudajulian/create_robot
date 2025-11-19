@@ -118,6 +118,13 @@ def generate_launch_description():
         ],
     )
 
+    twist_stamper_node = Node(
+        package="twist_stamper",
+        executable="twist_stamper",
+        name="twist_stamper_node",
+        output="screen",
+        arguments=['-r', 'cmd_vel_in:=cmd_vel', '-r', 'cmd_vel_out:=create_2_controller/cmd_vel'])
+
     # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -141,6 +148,7 @@ def generate_launch_description():
         robot_controller_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
+        twist_stamper_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
