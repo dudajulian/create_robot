@@ -49,10 +49,19 @@ def generate_launch_description():
             description="Start robot with mock hardware mirroring command to its states.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "use_sim_time",
+            default_value="true",
+            description="Use simulation clock if true",
+        )
+    )
 
     # Initialize Arguments
     gui = LaunchConfiguration("gui")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+    rviz_config = LaunchConfiguration("rviz_config")
+    use_sim_time = LaunchConfiguration("use_sim_time")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -80,7 +89,8 @@ def generate_launch_description():
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[robot_controllers],
+        # parameters=[robot_controllers], 
+        parameters=[robot_controllers, {"use_sim_time": use_sim_time}],
         output="both",
         remappings=[
             ("~/robot_description", "/robot_description"),
@@ -91,14 +101,14 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="both",
-        parameters=[robot_description],
+        parameters=[robot_description, {"use_sim_time": use_sim_time}],
     )
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
         output="log",
-        arguments=["-d", rviz_config_file],
+        arguments=["-d", rviz_config, {"use_sim_time": use_sim_time}],
         condition=IfCondition(gui),
     )
 
@@ -123,8 +133,18 @@ def generate_launch_description():
         executable="twist_stamper",
         name="twist_stamper_node",
         output="screen",
-        arguments=['-r', 'cmd_vel_in:=cmd_vel', '-r', 'cmd_vel_out:=create_2_controller/cmd_vel'])
+        arguments=['-r', 'cmd_vel_in:=cmd_vel', '-r', 'cmd_vel_out:=create_2_controller/cmd_vel'],
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
 
+    map_odom_broadcaster_node = Node(
+        package="coppelia_adapter",
+        executable="map_odom_broadcaster",
+        name="map_odom_broadcaster_node",
+        output="screen",
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
+    
     # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -143,12 +163,13 @@ def generate_launch_description():
     )
 
     nodes = [
+        map_odom_broadcaster_node,
+        twist_stamper_node,
         control_node,
         robot_state_pub_node,
         robot_controller_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_joint_state_broadcaster_after_robot_controller_spawner,
-        twist_stamper_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

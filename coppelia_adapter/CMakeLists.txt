@@ -8,12 +8,10 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(controller_manager REQUIRED)
-find_package(hardware_interface REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -26,6 +24,20 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+add_executable(map_odom_broadcaster src/map_odom_broadcaster.cpp)
+ament_target_dependencies(map_odom_broadcaster
+  rclcpp
+  tf2
+  tf2_geometry_msgs
+  tf2_msgs
+  geometry_msgs
+)
+
+install(TARGETS
+  map_odom_broadcaster
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(DIRECTORY
   description
